@@ -1,3 +1,6 @@
+<img width="3840" height="1860" alt="image" src="https://github.com/user-attachments/assets/608780dc-04e3-455e-a360-b97d2a965479" />
+
+
 # Read Visualization
 
 一个用于整理和可视化个人阅读痕迹的 React 应用。它可以从微信读书网关或 Obsidian 笔记导入阅读数据，并把书籍、划线、分类、年度阅读人格和思想聚类呈现在可交互的画布中。

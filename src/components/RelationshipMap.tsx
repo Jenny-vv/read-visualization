@@ -291,7 +291,7 @@ export default function RelationshipMap({ notebooks, highlights, onReanalyze, is
     })
       .then((dataUrl) => {
         const link = document.createElement("a");
-        link.download = "WeRead-阅读演化地图.png";
+        link.download = "WeRead-阅读演化.png";
         link.href = dataUrl;
         link.click();
       })
@@ -306,22 +306,24 @@ export default function RelationshipMap({ notebooks, highlights, onReanalyze, is
       className="p-8 bg-white/40 backdrop-blur-md border border-[#2C2C26]/10 rounded-xl shadow-xs w-[1700px] min-h-[980px] h-full font-sans text-[#2C2C26] select-none relative flex flex-col"
       id="relationship-map-container"
     >
-      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 flex gap-12 z-10">
-        <div className="w-16 h-1 bg-[#2C2C26]/10 rounded-full"></div>
-      </div>
-
-      <div className="flex items-center justify-between border-b border-[#2C2C26]/10 pb-4 mb-4 flex-shrink-0">
-        <div>
-          <h2 className="font-serif font-normal text-xl text-[#2C2C26] tracking-tight flex items-center gap-2">
-            <Compass className="w-5 h-5 text-[#2C2C26]/60" />
-            阅读演化地图
+      <div className="relative min-h-[180px] border-b border-[#2C2C26]/62 mb-8 flex-shrink-0">
+        <div className="absolute left-0 top-0 flex items-center gap-2 font-sans text-sm font-semibold uppercase tracking-widest text-[#2C2C26]/72">
+          <Compass className="h-4 w-4" />
+          Journey Atlas
+        </div>
+        <div className="absolute inset-x-0 top-7 text-center">
+          <h2 className="font-serif text-[88px] font-normal leading-none tracking-normal text-[#2C2C26]">
+            阅读演化
           </h2>
-          <p className="text-[9px] text-[#2C2C26]/50 mt-1 uppercase tracking-widest font-sans">
-            THE INTERSECTION OF TIME, GENRES AND BOOKS
+          <p className="-mt-8 font-serif text-[76px] font-normal uppercase leading-none tracking-normal text-[#2C2C26]/55">
+            EVOLUTION
+          </p>
+          <p className="mt-5 text-[12px] font-semibold text-[#2C2C26]/52 uppercase tracking-[0.42em] font-sans">
+            The intersection of time, genres and books
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="absolute right-0 top-0 flex items-center gap-3">
           {onReanalyze && (
             <button
               onClick={onReanalyze}
@@ -458,7 +460,7 @@ export default function RelationshipMap({ notebooks, highlights, onReanalyze, is
 
           <line x1={chartLeft - 100} x2={svgWidth - chartRight} y1={CHART_TOP + chartHeight + 34} y2={CHART_TOP + chartHeight + 34} stroke="rgba(44,44,38,0.10)" strokeWidth="1" />
           <text x={chartLeft - 100} y={CHART_TOP + chartHeight + 52} className="font-mono" fontSize="9" fill="rgba(44,44,38,0.40)" letterSpacing="0.08em">节点大小：阅读时间与划线数量 · 黑色实线：阅读先后 · 浅色虚线：同分类轨迹</text>
-          <text x={svgWidth - chartRight} y={CHART_TOP + chartHeight + 52} textAnchor="end" className="font-mono" fontSize="9" fill="rgba(44,44,38,0.40)" letterSpacing="0.08em">© WeChat Reading 阅读演化地图</text>
+          <text x={svgWidth - chartRight} y={CHART_TOP + chartHeight + 52} textAnchor="end" className="font-mono" fontSize="9" fill="rgba(44,44,38,0.40)" letterSpacing="0.08em">© WeChat Reading 阅读演化</text>
         </svg>
 
         {hoveredBook && (() => {

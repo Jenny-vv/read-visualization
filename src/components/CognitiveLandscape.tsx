@@ -204,15 +204,23 @@ export default function CognitiveLandscape({ notebooks, highlights = [], onReana
       id="cognitive-landscape-container"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#2C2C26]/10 pb-4 mb-6">
-        <div>
-          <h2 className="font-serif font-normal text-xl text-[#2C2C26] tracking-tight flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[#2C2C26]/60" />
+      <div className="relative min-h-[180px] border-b border-[#2C2C26]/62 mb-8">
+        <div className="absolute left-0 top-0 flex items-center gap-2 font-sans text-sm font-semibold uppercase tracking-widest text-[#2C2C26]/72">
+          <Layers className="h-4 w-4" />
+          Depth Salon
+        </div>
+        <div className="absolute inset-x-0 top-7 text-center">
+          <h2 className="font-serif text-[88px] font-normal leading-none tracking-normal text-[#2C2C26]">
             阅读深度
           </h2>
-          <p className="text-[9px] text-[#2C2C26]/50 mt-1 uppercase tracking-widest font-sans">COGNITIVE TOPOLOGY · READING DEPTH MAP</p>
+          <p className="-mt-8 font-serif text-[76px] font-normal uppercase leading-none tracking-normal text-[#2C2C26]/55">
+            DEPTH
+          </p>
+          <p className="mt-5 text-[12px] font-semibold text-[#2C2C26]/52 uppercase tracking-[0.42em] font-sans">
+            Cognitive topology and reading depth map
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="absolute right-0 top-0 flex items-center gap-3">
           {onReanalyze && (
             <button
               onClick={onReanalyze}
@@ -380,7 +388,7 @@ export default function CognitiveLandscape({ notebooks, highlights = [], onReana
 
                 {/* Island description */}
                 <div className="text-center mt-3 z-10 font-sans">
-                  <span className="font-serif font-normal text-xs text-[#2C2C26] tracking-wide block">
+                  <span className="font-serif font-normal text-2xl text-[#2C2C26] tracking-normal block">
                     {cat}
                   </span>
                   <span className="text-[8px] font-mono text-[#2C2C26]/50 tracking-widest uppercase block mt-0.5">

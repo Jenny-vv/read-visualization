@@ -12,12 +12,14 @@ interface InfiniteCanvasProps {
   onBlankClick?: () => void;
 }
 
+const DEFAULT_TRANSFORM: CanvasTransform = {
+  x: -31,
+  y: 96,
+  zoom: 0.55,
+};
+
 export default function InfiniteCanvas({ children, onBlankClick }: InfiniteCanvasProps) {
-  const [transform, setTransform] = useState<CanvasTransform>({
-    x: 100,
-    y: 80,
-    zoom: 0.65,
-  });
+  const [transform, setTransform] = useState<CanvasTransform>(DEFAULT_TRANSFORM);
   const [isDragging, setIsDragging] = useState(false);
   const [showMinimap, setShowMinimap] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -181,8 +183,7 @@ export default function InfiniteCanvas({ children, onBlankClick }: InfiniteCanva
   };
 
   const handleReset = () => {
-    // Reset view to center layout
-    applyTransform({ x: 120, y: 85, zoom: 0.65 }, true);
+    applyTransform(DEFAULT_TRANSFORM, true);
   };
 
   // Scroll zooming handler
@@ -251,7 +252,7 @@ export default function InfiniteCanvas({ children, onBlankClick }: InfiniteCanva
         className="absolute origin-top-left"
         style={{
           transform: `translate3d(${transform.x}px, ${transform.y}px, 0) scale(${transform.zoom})`,
-          width: "5400px",
+          width: "6200px",
           height: "6200px",
           willChange: "transform",
           contain: "layout style"

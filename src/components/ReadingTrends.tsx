@@ -491,19 +491,25 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#2C2C26]/10 pb-4 mb-6">
-        <div>
-          <h2 className="font-serif font-normal text-xl text-[#2C2C26] tracking-tight flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#2C2C26]/60 animate-pulse" />
+      <div className="relative min-h-[180px] border-b border-[#2C2C26]/62 mb-8">
+        <div className="absolute left-0 top-0 flex items-center gap-2 font-sans text-sm font-semibold uppercase tracking-widest text-[#2C2C26]/72">
+          <TrendingUp className="h-4 w-4" />
+          Reading Almanac
+        </div>
+        <div className="absolute inset-x-0 top-7 text-center">
+          <h2 className="font-serif text-[88px] font-normal leading-none tracking-normal text-[#2C2C26]">
             阅读趋势
           </h2>
-          <p className="text-[9px] text-[#2C2C26]/50 mt-1 uppercase tracking-widest font-sans">
-            Chronology, Choropleth, Duration, and Genre topology of Reading Journeys
+          <p className="-mt-8 font-serif text-[76px] font-normal uppercase leading-none tracking-normal text-[#2C2C26]/55">
+            TRENDS
+          </p>
+          <p className="mt-5 text-[12px] font-semibold text-[#2C2C26]/52 uppercase tracking-[0.42em] font-sans">
+            Chronology, choropleth, duration, and genre topology
           </p>
         </div>
         
         {/* Dynamic overall dashboard stats badges */}
-        <div className="flex items-center gap-3 text-[10px] font-mono text-[#2C2C26]/75">
+        <div className="absolute right-0 top-0 flex items-center gap-3 text-[10px] font-mono text-[#2C2C26]/75">
           {onReanalyze && (
             <button
               onClick={onReanalyze}
@@ -535,7 +541,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
         <div className="col-span-12 lg:col-span-8 bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs">
           
           <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-            <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+            <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
               <Calendar className="w-4 h-4 text-[#2C2C26]/55" />
               阅读日历热力图
             </h3>
@@ -643,7 +649,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
           <div className="bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs">
             
             <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-              <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+              <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
                 <PieChart className="w-4 h-4 text-[#2C2C26]/55" />
                 阅读类型占比图
               </h3>
@@ -755,7 +761,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
 
           <div className="bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs min-h-[220px]">
             <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-              <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+              <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
                 <Feather className="w-4 h-4 text-[#2C2C26]/55" />
                 作者统计
               </h3>
@@ -824,7 +830,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
 
           <div className="bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs">
             <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-              <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+              <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
                 <Award className="w-4 h-4 text-[#2C2C26]/55" />
                 阅读/划线记录排行
               </h3>
@@ -887,7 +893,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
         <div className="col-span-12 lg:col-span-6 bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs">
           
           <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-            <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+            <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-[#2C2C26]/55" />
               月度阅读活动折线图
             </h3>
@@ -996,7 +1002,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
         <div className="col-span-12 lg:col-span-6 bg-white border border-[#2C2C26]/10 rounded-xl p-5 flex flex-col justify-between relative shadow-2xs">
           
           <div className="flex justify-between items-center border-b border-[#2C2C26]/5 pb-2 mb-3">
-            <h3 className="font-serif font-medium text-xs text-[#2C2C26]/90 flex items-center gap-1.5">
+            <h3 className="font-serif font-normal text-lg text-[#2C2C26] flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#2C2C26]/55" />
               阅读时段热力图
             </h3>

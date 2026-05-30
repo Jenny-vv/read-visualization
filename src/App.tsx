@@ -881,9 +881,9 @@ export default function App() {
                   </div>
 
                   {/* Adaptive flowing layout wrapper for blocks to prevent any overlaps or truncation */}
-                  <div className="absolute left-[100px] top-[80px] w-[5300px] flex gap-[140px]">
+                  <div className="absolute left-[100px] top-[80px] w-[5900px] flex gap-[140px]">
                     {/* LEFT COLUMN: GROWTH MAP */}
-                    <div className="w-[1700px] flex-shrink-0">
+                    <div className="w-[2300px] flex-shrink-0">
                       <GrowthMap
                         notebooks={notebooks}
                         yearlyPersonality={yearlyPersonality}
@@ -934,10 +934,13 @@ export default function App() {
               )}
 
               {/* Collapsible Panel Hover Area & Toggle Button */}
-              <div className="absolute right-0 top-0 h-full w-6 z-40 flex items-center justify-end pointer-events-none group">
+              <div className="absolute right-0 top-0 hidden h-full w-14 z-40 sm:flex items-center justify-end group">
                 <button
+                  type="button"
                   onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
-                  className="pointer-events-auto hidden sm:flex w-5 h-20 bg-white border border-r-0 border-[#2C2C26]/20 text-[#2C2C26]/60 hover:text-[#2C2C26] hover:bg-[#FAF9F6] rounded-l-md items-center justify-center cursor-pointer shadow-xs transition-all duration-200 opacity-0 group-hover:opacity-100 animate-fade-in"
+                  aria-expanded={!rightPanelCollapsed}
+                  aria-label={rightPanelCollapsed ? "展开划线卡片" : "收起划线卡片"}
+                  className="mr-0 flex h-24 w-8 items-center justify-center rounded-l-lg border border-r-0 border-[#2C2C26]/18 bg-white/92 text-[#2C2C26]/58 shadow-sm backdrop-blur-md transition-all duration-200 opacity-0 translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 hover:bg-[#FAF9F6] hover:text-[#2C2C26] focus:translate-x-0 focus:opacity-100 cursor-pointer"
                   title={rightPanelCollapsed ? "展开划线卡片" : "收起划线卡片"}
                 >
                   {rightPanelCollapsed ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}

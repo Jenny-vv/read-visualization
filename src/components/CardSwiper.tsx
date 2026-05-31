@@ -3,70 +3,48 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { WeReadHighlight, WeReadNotebook } from "../types";
 import { Download, Heart, Compass, ArrowDown, ArrowUp, Check, Loader2 } from "lucide-react";
 import { toPng } from "html-to-image";
 import BookCover from "./BookCover";
+import styleOneBg from "../../assets/风格一.png";
+import styleTwoBg from "../../assets/风格二.png";
+import styleThreeBg from "../../assets/风格三.png";
 
 interface CardSwiperProps {
   notebooks: WeReadNotebook[];
   highlights: Array<WeReadHighlight & { bookName: string; bookAuthor: string; bookCover: string }>;
 }
 
+type CardStyle = "terra" | "portable" | "receipt" | "cleanse";
+
+const cardStyles: Array<{
+  id: CardStyle;
+  title: string;
+}> = [
+  { id: "terra", title: "样式 1" },
+  { id: "portable", title: "样式 2" },
+  { id: "receipt", title: "样式 3" },
+  { id: "cleanse", title: "样式 4" },
+];
+
+const styleSlots: Array<{ id?: CardStyle; title: string }> = Array.from({ length: 6 }, (_, index) => ({
+  id: cardStyles[index]?.id,
+  title: cardStyles[index]?.title || `样式 ${index + 1}`,
+}));
+
 export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [cardStyle, setCardStyle] = useState<CardStyle>("terra");
   const [likedCards, setLikedCards] = useState<Record<string, boolean>>({});
   const [heartsCount, setHeartsCount] = useState<Record<string, number>>({});
   const [floatingHearts, setFloatingHearts] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const [copyStatus, setCopyStatus] = useState<"idle" | "rendering" | "copied" | "downloaded" | "failed">("idle");
-  const [safeBookCover, setSafeBookCover] = useState<string | null>(null);
-  const [coverFetchFailed, setCoverFetchFailed] = useState<boolean>(false);
   const doubleTapRef = useRef<number | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const activeHighlight = highlights[currentIndex];
-
-  // Fetch book cover securely as Base64 Data URL to guarantee HTML-To-Image doesn't fail due to CORS
-  useEffect(() => {
-    if (!activeHighlight || !activeHighlight.bookCover) {
-      setSafeBookCover(null);
-      setCoverFetchFailed(false);
-      return;
-    }
-
-    setSafeBookCover(null);
-    setCoverFetchFailed(false);
-
-    let active = true;
-    const proxiedUrl = `/api/weread/proxy-cover?url=${encodeURIComponent(activeHighlight.bookCover)}`;
-    
-    fetch(proxiedUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error("Proxy fetch failed");
-        return res.blob();
-      })
-      .then((blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (active) {
-            setSafeBookCover(reader.result as string);
-          }
-        };
-        reader.readAsDataURL(blob);
-      })
-      .catch((err) => {
-        console.warn("Could not retrieve book cover as Base64 via proxy:", err);
-        if (active) {
-          // If even proxy fails, we mark it, but we still display the image via standard tags
-          setCoverFetchFailed(true);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [activeHighlight]);
 
   // Change card helper
   const navigateCard = (direction: "up" | "down") => {
@@ -75,6 +53,11 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
     } else if (direction === "down") {
       setCurrentIndex((prev) => (prev < highlights.length - 1 ? prev + 1 : 0));
     }
+    setCopyStatus("idle");
+  };
+
+  const changeCardStyle = (style: CardStyle) => {
+    setCardStyle(style);
     setCopyStatus("idle");
   };
 
@@ -180,29 +163,204 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
   }
 
   const currentLikes = heartsCount[activeHighlight.bookmarkId] || (Math.floor((activeHighlight.createTime % 1000) / 10) + 32);
+  const recordedDate = new Date(activeHighlight.createTime * 1000).toISOString().split("T")[0];
+  const cleanAuthor = activeHighlight.bookAuthor?.replace(/\[.*?\]/, "").trim() || "佚名";
+  const styleFourQuoteClass = activeHighlight.markText.length > 220
+    ? "text-[8.5px] leading-[1.58]"
+    : activeHighlight.markText.length > 150
+    ? "text-[9.5px] leading-[1.6]"
+    : activeHighlight.markText.length > 90
+    ? "text-[10.5px] leading-[1.65]"
+    : "text-[12px] leading-[1.72]";
+
+  const renderStyledCard = () => {
+    if (cardStyle === "portable") {
+      return (
+        <div
+          className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[#151515] text-[#1b1b1b]"
+          style={{ fontFamily: "'Courier Prime', 'Courier New', 'Nimbus Mono PS', monospace" }}
+        >
+          <div className="relative aspect-[3/4] h-[108%] max-h-[108%] max-w-[108%]">
+            <img
+              src={styleTwoBg}
+              alt=""
+              className="absolute inset-0 h-full w-full object-contain"
+              draggable={false}
+            />
+            <div className="absolute left-[35%] top-[35%] w-[39%] text-left">
+              <p className="max-h-[148px] overflow-y-auto scrollbar-none text-[12.5px] font-light leading-[1.55] tracking-[0.08em] text-[#11110f]/85">
+                “{activeHighlight.markText}”
+              </p>
+              <div className="mt-6 space-y-1 text-[9.5px] font-light leading-[1.4] tracking-[0.06em] text-[#5e5d58]/70">
+                <p className="line-clamp-2">{activeHighlight.bookName}</p>
+                <p>{cleanAuthor}</p>
+                <p>{recordedDate}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (cardStyle === "receipt") {
+      return (
+        <div
+          className="relative h-full w-full overflow-hidden bg-[#efece1] text-[#1c1614]"
+          style={{ fontFamily: "'Fusion Pixel 12px Proportional SC', 'Courier New', monospace" }}
+        >
+          <img
+            src={styleThreeBg}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            draggable={false}
+          />
+          <div className="absolute left-[18%] top-[7%] w-[64%] text-center text-[10px] font-normal tracking-[0.28em] text-[#1c1614]/78">
+            READ.STUDIO
+          </div>
+
+          <div className="absolute left-[24%] top-[18%] flex h-[50%] w-[52%] flex-col items-center text-center text-[#1c1614]/82">
+            <h3 className="line-clamp-2 text-[17px] font-normal uppercase leading-[1.35] tracking-[0.26em]">
+              {activeHighlight.bookName}
+            </h3>
+            <div className="mt-7 h-px w-[86%] bg-[#1c1614]/70"></div>
+
+            <div className="mt-12 min-h-0 flex-1 overflow-y-auto scrollbar-none text-[10px] font-normal leading-[1.6] tracking-[0.08em]">
+              <p>{activeHighlight.markText}</p>
+            </div>
+
+            <div className="mt-9 h-px w-[86%] bg-[#1c1614]/70"></div>
+            <div className="mt-7 text-[10px] font-normal leading-[1.65] tracking-[0.10em]">
+              <p>{cleanAuthor}</p>
+              <p>{recordedDate}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (cardStyle === "cleanse") {
+      return (
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[#eceae3] text-[#231f1b]">
+          <div className="relative aspect-[3/4] h-full max-h-full max-w-full">
+            <div className="absolute inset-0 bg-[#efeee8]"></div>
+            <div className="absolute inset-0 opacity-[0.32] memory-paper-grain"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(255,255,255,0.56),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.28),rgba(214,211,199,0.22))]"></div>
+
+            <div className="absolute left-[31%] top-[25%] h-[25%] w-[38%] bg-[#f3f1ea] p-[3.2%] shadow-[0_12px_30px_rgba(42,36,27,0.14)] grayscale">
+              <div className="absolute left-1/2 top-[-8%] z-20 h-[10%] w-[26%] -translate-x-1/2 rotate-[-2deg] bg-[#d6d2c8]/70 shadow-[0_1px_3px_rgba(50,45,36,0.10)]"></div>
+              <div className="relative h-full w-full overflow-hidden bg-[#dfddd5]">
+                <BookCover
+                  url={activeHighlight.bookCover}
+                  title={activeHighlight.bookName}
+                  author={activeHighlight.bookAuthor}
+                  className="h-full w-full rounded-none"
+                />
+                <div className="absolute inset-0 bg-[#f5f1e8]/22 mix-blend-screen"></div>
+              </div>
+            </div>
+
+            <div
+              className="absolute left-[50%] top-[52%] w-[46%] -translate-x-1/2 text-center font-light tracking-[0.03em] text-[#171411]/88"
+              style={{ fontFamily: "'Songti SC', 'STSong', SimSun, serif" }}
+            >
+              <p className={`max-h-[220px] overflow-y-auto scrollbar-none ${styleFourQuoteClass}`}>
+                {activeHighlight.markText}
+              </p>
+              <div className="relative mx-auto mt-2 h-7 w-[72%]">
+                <div className="absolute left-[8%] top-1 h-[1.5px] w-[80%] -rotate-3 bg-[#cf4e4e]/82"></div>
+                <div className="absolute left-[22%] top-3.5 h-[1.5px] w-[58%] rotate-6 bg-[#cf4e4e]/56"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-[#2a211d] text-[#231d18] font-serif">
+        <img
+          src={styleOneBg}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable={false}
+        />
+        <div className="relative flex h-full w-full items-center justify-center px-7 py-9">
+          <div className="flex h-[76%] w-[68%] min-w-[246px] max-w-[360px] flex-col items-center justify-between bg-[#eee8d8] px-8 py-11 text-center shadow-[0_20px_38px_rgba(26,18,12,0.24)]">
+            <div className="flex min-h-[64px] items-center justify-center">
+              <h3 className="text-[18px] leading-[1.28] text-[#1f1915]/80">
+                《{activeHighlight.bookName}》
+              </h3>
+            </div>
+
+            <div className="flex min-h-0 flex-1 items-center justify-center py-8">
+              <p className="max-h-full overflow-y-auto scrollbar-none text-[15px] leading-[1.82] text-[#211b16]/80">
+                {activeHighlight.markText}
+              </p>
+            </div>
+
+            <div className="space-y-2 text-[14px] leading-[1.35] uppercase text-[#211b16]/80">
+              <p>{cleanAuthor}</p>
+              <p className="text-[12px]">{recordedDate}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div 
-      className="flex flex-col justify-between p-5 bg-white/80 backdrop-blur-md border border-[#2C2C26]/10 rounded-2xl shadow-xs w-full h-full font-sans text-[#2C2C26] select-none relative outline-hidden"
+      className="flex h-full w-full flex-col items-center justify-center gap-4 font-sans text-[#2C2C26] select-none outline-hidden"
       onKeyDown={handleKeyDown}
       tabIndex={0}
       id="card-swiper"
     >
-      {/* Top Header info (Snug & Clean border spacing) */}
-      <div className="flex items-center justify-between border-b border-[#2C2C26]/10 pb-2 mb-3">
-        <span className="text-[10px] font-sans tracking-widest text-[#2C2C26]/50 uppercase">
-          划线记忆 · 刷卡
-        </span>
-        <span className="text-[10px] font-mono text-[#2C2C26]/50">
-          {currentIndex + 1} / {highlights.length}
-        </span>
+      <div className="flex w-full justify-center">
+        <div className="flex items-center justify-center gap-3 rounded-full border border-[#2C2C26]/10 bg-white/80 px-3 py-1 shadow-xs backdrop-blur-md">
+          {styleSlots.map(({ id, title }, index) => {
+            const isActive = id === cardStyle;
+            const isReady = Boolean(id);
+            return (
+              <button
+                key={title}
+                type="button"
+                onClick={() => {
+                  if (id) changeCardStyle(id);
+                }}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-sans font-normal transition-all duration-200 ${
+                  isActive
+                    ? "border-black bg-black text-white"
+                    : isReady
+                    ? "border-[#2C2C26]/8 bg-white/54 text-[#2C2C26]/55 hover:border-[#2C2C26]/18 hover:bg-white hover:text-[#2C2C26] cursor-pointer"
+                    : "border-[#2C2C26]/6 bg-white/28 text-[#2C2C26]/22 cursor-default"
+                }`}
+                aria-label={title}
+                aria-pressed={isActive}
+                disabled={!isReady}
+                title={title}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      <div className="flex min-h-0 w-full max-w-[720px] flex-1 flex-col justify-between rounded-2xl border border-[#2C2C26]/10 bg-white/80 p-5 shadow-xs backdrop-blur-md">
+        <div className="flex items-center justify-between border-b border-[#2C2C26]/10 pb-2 mb-3">
+          <span className="text-[10px] font-sans tracking-widest text-[#2C2C26]/50 uppercase">
+            划线记忆 · 刷卡
+          </span>
+          <span className="text-[10px] font-mono text-[#2C2C26]/50">
+            {currentIndex + 1} / {highlights.length}
+          </span>
+        </div>
 
       {/* Interactive Main Polaroid Card wrapper */}
       <div 
         ref={cardRef}
         onClick={handleCardClick}
-        className="flex-1 w-full bg-white border border-[#2C2C26]/10 rounded-lg shadow-3xs p-5 relative flex flex-col justify-between overflow-hidden cursor-pointer active:scale-[0.99] transition-transform duration-100 mb-4"
+        className="flex-1 w-full bg-white border border-[#2C2C26]/10 rounded-lg shadow-3xs relative flex flex-col justify-between overflow-hidden cursor-pointer active:scale-[0.99] transition-transform duration-100 mb-4"
         title="双击卡片可以点赞 resonance 哦"
       >
         {/* Floating hearts anchor */}
@@ -216,45 +374,10 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
           </div>
         ))}
 
-        {/* Book summary row details */}
-        <div className="flex items-center gap-2.5 border-b border-[#2C2C26]/10 pb-3 mb-2 w-full">
-          <div className="w-8 h-11 shadow-3xs flex-shrink-0">
-            <BookCover 
-              url={activeHighlight.bookCover} 
-              title={activeHighlight.bookName} 
-              author={activeHighlight.bookAuthor}
-              overrideSrc={safeBookCover}
-              className="w-full h-full"
-            />
-          </div>
-          <div className="flex flex-col justify-center min-w-0 flex-1">
-            <h4 className="font-sans font-medium text-[11px] text-[#2C2C26] leading-tight line-clamp-1">{activeHighlight.bookName}</h4>
-            <p className="text-[9px] text-[#2C2C26]/60 font-mono mt-0.5 truncate">{activeHighlight.bookAuthor}</p>
-          </div>
-        </div>
+        {renderStyledCard()}
 
-        {/* Centered Large Quotes Quote Content */}
-        <div className="flex-1 flex items-center justify-center px-1 py-4 min-h-0">
-          <div className="relative w-full max-h-full overflow-y-auto scrollbar-thin">
-            <span className="absolute -top-6 -left-3 text-[#2C2C26]/5 font-serif text-6xl leading-none select-none">"</span>
-            <p className="font-serif italic text-sm md:text-base text-[#2C2C26] leading-relaxed text-justify relative z-10 px-1">
-              {activeHighlight.markText}
-            </p>
-            <span className="absolute -bottom-8 -right-2 text-[#2C2C26]/5 font-serif text-6xl leading-none select-none">"</span>
-          </div>
-        </div>
-
-        {/* Date line & Deep label */}
-        <div className="flex items-center justify-between border-t border-[#2C2C26]/10 pt-3 text-[9px] font-mono text-[#2C2C26]/50 tracking-wide mt-2">
-          <span>记录于 {new Date(activeHighlight.createTime * 1000).toISOString().split("T")[0]}</span>
-          <div className="flex items-center gap-1.5">
-            <span className="flex items-center gap-0.5 text-rose-600/70 font-sans">
-              ❤️ {currentLikes}
-            </span>
-            {activeHighlight.chapterUid && (
-              <span>· 章节 : {activeHighlight.chapterUid}</span>
-            )}
-          </div>
+        <div className="absolute bottom-3 right-3 z-20 rounded-full bg-white/84 px-2.5 py-1 text-[9px] font-mono text-[#2C2C26]/60 shadow-[0_6px_16px_rgba(0,0,0,0.12)] backdrop-blur-sm">
+          ♡ {currentLikes}
         </div>
       </div>
 
@@ -323,6 +446,7 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
           <span>下句</span>
           <ArrowDown className="w-3.5 h-3.5" />
         </button>
+      </div>
       </div>
     </div>
   );

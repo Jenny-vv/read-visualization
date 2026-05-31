@@ -43,21 +43,6 @@ const MBTI_TYPES = new Set([
   "ISTJ", "ISFJ", "ESTJ", "ESFJ",
   "ISTP", "ISFP", "ESTP", "ESFP"
 ]);
-const VISUAL_PERSONA_BY_ARCHETYPE: Record<string, string> = {
-  "凝视": "蒙娜丽莎",
-  "沉思": "圣杰罗姆",
-  "辩思": "柏拉图",
-  "落地": "亚里士多德",
-  "盛放": "维纳斯",
-  "繁生": "芙洛拉",
-  "守护": "圣母",
-  "野性": "巴克斯",
-  "质疑": "圣托马斯",
-  "决断": "朱迪斯",
-  "召唤": "马太",
-  "加冕": "伊丽莎白一世",
-  "孤绝": "圣方济各"
-};
 
 app.use(express.json({ limit: "50mb" }));
 
@@ -236,25 +221,6 @@ function buildMbtiDescription(type: string, yearBooks: any[], yearHighlights: an
   return `${type} 来自 ${categories} 的阅读重心：${titleText}把你的注意力推向内在问题与现实结构之间。${quoteText}显示你既在辨认世界，也在给自己的行动方式定型。`;
 }
 
-function inferVisualArchetype(type: string, yearBooks: any[], yearHighlights: any[]): string {
-  const text = [
-    ...yearBooks.map((item) => `${getBookTitle(item)} ${getBookCategory(item)} ${getBookFromItem(item)?.author || ""}`),
-    ...yearHighlights.map((item: any) => item?.markText || "")
-  ].join(" ");
-  if (/怀疑|证据|真实|真相|批判|逻辑|科学|技术|方法|结构/.test(text)) return "质疑";
-  if (/权力|治理|战略|管理|组织|商业|经济|投资|决策/.test(text)) return "加冕";
-  if (/冲突|反抗|愤怒|决裂|革命|越界|欲望/.test(text)) return "决断";
-  if (/孤独|退隐|荒原|远方|沉默|死亡|存在/.test(text)) return "孤绝";
-  if (/关系|照护|伦理|家庭|母亲|共情|责任/.test(text)) return "守护";
-  if (/哲学|理念|抽象|本质|形而上|意义/.test(text)) return "辩思";
-  if (/自由|美|身体|艺术|爱情|感受/.test(text)) return "盛放";
-  if (/实践|现实|经验|规则|习惯|落地/.test(text)) return "落地";
-  if (/ENFP|ESFP/.test(type)) return "繁生";
-  if (/ENTP|ESTP/.test(type)) return "野性";
-  if (/ISTJ|INTP/.test(type)) return "沉思";
-  return "凝视";
-}
-
 function buildAnnualQuestion(yearBooks: any[], yearHighlights: any[]): string {
   const titles = yearBooks.map(getBookTitle).filter(Boolean);
   const categories = Array.from(new Set(yearBooks.map(getBookCategory))).join("、");
@@ -270,18 +236,10 @@ function buildAnnualQuestion(yearBooks: any[], yearHighlights: any[]): string {
 }
 
 function buildFallbackPersonality(year: number, title: string, yearBooks: any[], yearHighlights: any[]) {
-  const visualArchetype = inferVisualArchetype(title, yearBooks, yearHighlights);
-  const artPersona = VISUAL_PERSONA_BY_ARCHETYPE[visualArchetype] || "蒙娜丽莎";
-  const category = Array.from(new Set(yearBooks.map(getBookCategory))).slice(0, 2).join("、") || "未分类";
-  const bookTitle = yearBooks[0] ? `《${getBookTitle(yearBooks[0])}》` : "这一年的书目";
-
   return {
     year,
     title,
     annualQuestion: buildAnnualQuestion(yearBooks, yearHighlights),
-    visualArchetype,
-    artPersona,
-    personaReason: `${bookTitle}与${category}阅读把注意力推向这类心智姿态，因此视觉人格落在${visualArchetype}，对应${artPersona}的观看关系。`,
     description: yearBooks.length > 0
       ? buildMbtiDescription(title, yearBooks, yearHighlights)
       : `${title} 来自这一年零散但有效的阅读痕迹：书目数量不多，却已经能看见你在意义、秩序与自我边界之间寻找稳定的理解方式。`
@@ -312,9 +270,6 @@ function completeAnalysisYears(result: any, requiredYears: number[], books: any[
       year,
       title: normalizeMbtiTitle(item?.title, fallback.title),
       annualQuestion: item?.annualQuestion || fallback.annualQuestion,
-      visualArchetype: VISUAL_PERSONA_BY_ARCHETYPE[item?.visualArchetype] ? item.visualArchetype : fallback.visualArchetype,
-      artPersona: VISUAL_PERSONA_BY_ARCHETYPE[item?.visualArchetype] || item?.artPersona || fallback.artPersona,
-      personaReason: item?.personaReason || fallback.personaReason,
       description: item?.description || fallback.description
     });
   });
@@ -592,7 +547,7 @@ ${bookSummaries}
 代表性划线内容（按时间与书籍分散抽样）：
 ${quoteSamples || "暂无划线样本"}
 
-请严格按 prompt 要求返回 JSON。yearlyPersonality 中每一年必须包含 year、title、annualQuestion、visualArchetype、artPersona、personaReason、description，不允许省略 persona 相关字段。`;
+请严格按 prompt 要求返回 JSON。yearlyPersonality 中每一年必须只包含 year、title、annualQuestion、description。`;
 
   if (analysisConfig?.endpoint && analysisConfig?.apiKey && analysisConfig?.model) {
     try {
@@ -650,14 +605,11 @@ ${quoteSamples || "暂无划线样本"}
               type: Type.ARRAY,
               items: {
                 type: Type.OBJECT,
-                required: ["year", "title", "annualQuestion", "visualArchetype", "artPersona", "personaReason", "description"],
+                required: ["year", "title", "annualQuestion", "description"],
                 properties: {
                   year: { type: Type.INTEGER },
                   title: { type: Type.STRING },
                   annualQuestion: { type: Type.STRING },
-                  visualArchetype: { type: Type.STRING },
-                  artPersona: { type: Type.STRING },
-                  personaReason: { type: Type.STRING },
                   description: { type: Type.STRING }
                 }
               }

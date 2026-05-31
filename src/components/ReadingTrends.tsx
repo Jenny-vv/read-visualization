@@ -479,7 +479,7 @@ export default function ReadingTrends({ notebooks, stats, highlights, onReanalyz
 
   return (
     <div 
-      className="module-surface-shadow p-8 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-[1700px] font-sans text-[#2C2C26] select-none relative"
+      className="module-surface-shadow px-18 py-14 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-[1700px] font-sans text-[#2C2C26] select-none relative"
       id="reading-trends-container"
     >
       {/* Structural pins for visual symmetry */}

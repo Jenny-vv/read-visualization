@@ -200,7 +200,7 @@ export default function CognitiveLandscape({ notebooks, highlights = [], onReana
 
   return (
     <div 
-      className="module-surface-shadow p-8 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-full min-h-[500px] font-sans text-[#2C2C26] select-none relative"
+      className="module-surface-shadow px-18 py-14 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-full min-h-[500px] font-sans text-[#2C2C26] select-none relative"
       id="cognitive-landscape-container"
     >
       {/* Header */}
@@ -380,7 +380,7 @@ export default function CognitiveLandscape({ notebooks, highlights = [], onReana
                   <span className="font-serif text-[30px] font-semibold leading-none text-[#2C2C26] tracking-normal block">
                     {cat}
                   </span>
-                  <span className="text-[8px] font-mono text-[#2C2C26]/50 tracking-widest uppercase block mt-0.5">
+                  <span className="mt-4 block font-mono text-[12px] uppercase tracking-[0.32em] text-[#2C2C26]/42">
                     {catBooks.length} BOOKS · DEEPER TOWARD CORE
                   </span>
                 </div>

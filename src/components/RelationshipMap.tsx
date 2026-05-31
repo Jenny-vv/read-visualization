@@ -303,7 +303,7 @@ export default function RelationshipMap({ notebooks, highlights, onReanalyze, is
   return (
     <div
       ref={containerRef}
-      className="module-surface-shadow px-18 py-14 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-[1700px] min-h-[980px] h-full font-sans text-[#2C2C26] select-none relative flex flex-col"
+      className="module-surface-shadow px-18 py-14 bg-[#FBFAF7] border border-[#2C2C26]/8 rounded-xl w-[1700px] min-h-[980px] h-full font-sans text-[#2C2C26] select-none relative flex flex-col"
       id="relationship-map-container"
     >
       <div className="relative min-h-[180px] border-b border-[#2C2C26]/62 flex-shrink-0">

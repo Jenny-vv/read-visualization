@@ -241,7 +241,7 @@ export default function GrowthMap({ notebooks, yearlyPersonality, isAiGenerated,
 
   return (
     <div 
-      className="module-surface-shadow w-[2300px] select-none relative overflow-hidden rounded-xl border border-[#2C2C26]/8 bg-white/52 px-18 py-14 font-sans text-[#2C2C26] backdrop-blur-md" 
+      className="module-surface-shadow w-[2300px] select-none relative overflow-hidden rounded-xl border border-[#2C2C26]/8 bg-[#FBFAF7] px-18 py-14 font-sans text-[#2C2C26]" 
       id="growth-map-container"
     >
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(90deg,rgba(44,44,38,0.018)_1px,transparent_1px),linear-gradient(180deg,rgba(44,44,38,0.016)_1px,transparent_1px)] bg-[size:58px_58px] opacity-45"></div>

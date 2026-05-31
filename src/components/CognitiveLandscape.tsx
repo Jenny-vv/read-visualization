@@ -200,7 +200,7 @@ export default function CognitiveLandscape({ notebooks, highlights = [], onReana
 
   return (
     <div 
-      className="module-surface-shadow px-18 py-14 bg-white/52 backdrop-blur-md border border-[#2C2C26]/8 rounded-xl w-full min-h-[500px] font-sans text-[#2C2C26] select-none relative"
+      className="module-surface-shadow px-18 py-14 bg-[#FBFAF7] border border-[#2C2C26]/8 rounded-xl w-full min-h-[500px] font-sans text-[#2C2C26] select-none relative"
       id="cognitive-landscape-container"
     >
       {/* Header */}

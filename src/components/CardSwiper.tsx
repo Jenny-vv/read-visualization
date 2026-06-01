@@ -38,8 +38,6 @@ const styleSlots: Array<{ id?: CardStyle; title: string }> = Array.from({ length
 export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [cardStyle, setCardStyle] = useState<CardStyle>("terra");
-  const [likedCards, setLikedCards] = useState<Record<string, boolean>>({});
-  const [heartsCount, setHeartsCount] = useState<Record<string, number>>({});
   const [floatingHearts, setFloatingHearts] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const [copyStatus, setCopyStatus] = useState<"idle" | "rendering" | "copied" | "downloaded" | "failed">("idle");
   const doubleTapRef = useRef<number | null>(null);
@@ -88,11 +86,6 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
 
   const triggerLike = (x: number, y: number) => {
     if (!activeHighlight) return;
-    const bookmarkId = activeHighlight.bookmarkId;
-    
-    // Toggle liked state
-    setLikedCards(prev => ({ ...prev, [bookmarkId]: true }));
-    setHeartsCount(prev => ({ ...prev, [bookmarkId]: (prev[bookmarkId] || (Math.floor((activeHighlight.createTime % 1000) / 10) + 32)) + 1 }));
 
     // Spawn floating heart
     const newHeart = { id: Date.now(), x, y };
@@ -163,7 +156,6 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
     );
   }
 
-  const currentLikes = heartsCount[activeHighlight.bookmarkId] || (Math.floor((activeHighlight.createTime % 1000) / 10) + 32);
   const recordedDate = new Date(activeHighlight.createTime * 1000).toISOString().split("T")[0];
   const cleanAuthor = activeHighlight.bookAuthor?.replace(/\[.*?\]/, "").trim() || "佚名";
   const styleFourQuoteClass = activeHighlight.markText.length > 220
@@ -383,9 +375,6 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
 
         {renderStyledCard()}
 
-        <div className="absolute bottom-3 right-3 z-20 rounded-full bg-white/84 px-2.5 py-1 text-[9px] font-mono text-[#2C2C26]/60 shadow-[0_6px_16px_rgba(0,0,0,0.12)] backdrop-blur-sm">
-          ♡ {currentLikes}
-        </div>
       </div>
 
       {/* Swipe Navigators */}

@@ -246,10 +246,10 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
             <img
               src={styleFourBg}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute left-1/2 top-1/2 h-[112%] w-[112%] -translate-x-1/2 -translate-y-1/2 object-fill"
               draggable={false}
             />
-            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-black/15"></div>
 
             <div className="absolute left-1/2 top-[17%] h-[clamp(138px,28%,188px)] w-[clamp(102px,38%,150px)] -translate-x-1/2 bg-[#f3f1ea] p-[3.2%] shadow-[0_12px_30px_rgba(0,0,0,0.22)] grayscale">
               <div className="absolute left-1/2 top-[-8%] z-20 h-[10%] w-[26%] -translate-x-1/2 rotate-[-2deg] bg-[#d6d2c8]/70 shadow-[0_1px_3px_rgba(50,45,36,0.10)]"></div>

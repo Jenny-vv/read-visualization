@@ -246,7 +246,7 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
             <img
               src={styleFourBg}
               alt=""
-              className="absolute left-1/2 top-1/2 h-[112%] w-[112%] -translate-x-1/2 -translate-y-1/2 object-fill"
+              className="absolute left-1/2 top-1/2 h-[112%] w-[150%] -translate-x-1/2 -translate-y-1/2 object-fill"
               draggable={false}
             />
             <div className="absolute inset-0 bg-black/15"></div>
@@ -271,7 +271,7 @@ export default function CardSwiper({ notebooks, highlights }: CardSwiperProps) {
               <p className={`mx-auto max-h-[220px] w-full overflow-y-auto scrollbar-none ${styleFourQuoteClass}`}>
                 {activeHighlight.markText}
               </p>
-              <div className="relative mx-auto mt-2 h-7 w-[72%]">
+              <div className="relative mx-auto mt-12 h-7 w-[72%]">
                 <div className="absolute left-[8%] top-1 h-[1.5px] w-[80%] -rotate-3 bg-white/82"></div>
                 <div className="absolute left-[22%] top-3.5 h-[1.5px] w-[58%] rotate-6 bg-white/58"></div>
               </div>
